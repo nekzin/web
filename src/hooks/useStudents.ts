@@ -1,76 +1,76 @@
+
 import {
   useQuery,
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query';
-import { deleteStudentApi, getStudentsApi } from '@/api/studentsApi';
+import {
+  deleteStudentApi,
+  getStudentsApi,
+  createStudentApi, 
+} from '@/api/studentsApi';
 import type StudentInterface from '@/types/StudentInterface';
 
 interface StudentsHookInterface {
   students: StudentInterface[];
   deleteStudentMutate: (studentId: number) => void;
+  createStudentMutate: (data: {
+  firstName: string;
+  lastName: string;
+  patronymic: string;
+  groupId: number;
+}) => void;
+  isCreating: boolean; 
 }
 
 const useStudents = (): StudentsHookInterface => {
   const queryClient = useQueryClient();
 
-  const { data, refetch } = useQuery({
+  const { data } = useQuery({
     queryKey: ['students'],
     queryFn: () => getStudentsApi(),
-    enabled: false,
   });
 
-  /**
-   * Мутация удаления студента
-   */
-  const deleteStudentMutate = useMutation({
-    // вызов API delete
+  const deleteStudentMutation = useMutation({
     mutationFn: async (studentId: number) => deleteStudentApi(studentId),
-    // оптимистичная мутация (обновляем данные на клиенте до API запроса delete)
     onMutate: async (studentId: number) => {
       await queryClient.cancelQueries({ queryKey: ['students'] });
-      // получаем данные из TanStackQuery
       const previousStudents = queryClient.getQueryData<StudentInterface[]>(['students']);
-      let updatedStudents = [...(previousStudents ?? [])];
-
-      if (!updatedStudents) return;
-
-      // помечаем удаляемую запись
-      updatedStudents = updatedStudents.map((student: StudentInterface) => ({
-        ...student,
-        ...(student.id === studentId ? { isDeleted: true } : {}),
-      }));
-      // обновляем данные в TanStackQuery
-      queryClient.setQueryData<StudentInterface[]>(['students'], updatedStudents);
-
-      return { previousStudents, updatedStudents };
+      const updatedStudents = [...(previousStudents ?? [])].map((student) =>
+        student.id === studentId ? { ...student, isDeleted: true } : student
+      );
+      queryClient.setQueryData(['students'], updatedStudents);
+      return { previousStudents };
     },
     onError: (err, variables, context) => {
-      console.log('>>> deleteStudentMutate  err', err);
-      queryClient.setQueryData<StudentInterface[]>(['students'], context?.previousStudents);
+      console.log('>>> deleteStudentMutate err', err);
+      queryClient.setQueryData(['students'], context?.previousStudents);
     },
-    // обновляем данные в случаи успешного выполнения mutationFn: async (studentId: number) => deleteStudentApi(studentId),
-    onSuccess: async (studentId, variables, { previousStudents }) => {
-      await queryClient.cancelQueries({ queryKey: ['students'] });
-      // вариант 1 - запрос всех записей
-      // refetch();
-
-      // вариант 2 - удаление конкретной записи
-      if (!previousStudents) {
-        return;
-      }
-      const updatedStudents = previousStudents.filter((student: StudentInterface) => student.id !== studentId);
-      queryClient.setQueryData<StudentInterface[]>(['students'], updatedStudents);
+    onSuccess: (studentId, _variables, context) => {
+      const previousStudents = context?.previousStudents;
+      if (!previousStudents) return;
+      const updatedStudents = previousStudents.filter((s) => s.id !== studentId);
+      queryClient.setQueryData(['students'], updatedStudents);
     },
-    // onSettled: (data, error, variables, context) => {
-    //   // вызывается после выполнения запроса в случаи удачи или ошибке
-    //   console.log('>> deleteStudentMutate onSettled', data, error, variables, context);
-    // },
   });
+
+const createStudentMutation = useMutation({
+  mutationFn: (data: {
+    firstName: string;
+    lastName: string;
+    patronymic: string;
+    groupId: number;
+  }) => createStudentApi(data),
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ['students'] });
+  },
+});
 
   return {
     students: data ?? [],
-    deleteStudentMutate: deleteStudentMutate.mutate,
+    deleteStudentMutate: deleteStudentMutation.mutate,
+    createStudentMutate: createStudentMutation.mutate,
+    isCreating: createStudentMutation.isPending, 
   };
 };
 
