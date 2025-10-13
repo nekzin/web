@@ -35,14 +35,14 @@ export const deleteStudentApi = async (studentId: number): Promise<number> => {
 export const createStudentApi = async (studentData: {
   firstName: string;
   lastName: string;
-  patronymic: string; // ← имя из формы
+  middleName: string; // ← имя из формы
   groupId: number;
 }): Promise<StudentInterface> => {
   // Преобразуем patronymic → middleName для БД
   const payload = {
     firstName: studentData.firstName,
     lastName: studentData.lastName,
-    middleName: studentData.patronymic,
+    middleName: studentData.middleName,
     groupId: studentData.groupId,
   };
 

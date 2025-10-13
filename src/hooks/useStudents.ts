@@ -17,7 +17,7 @@ interface StudentsHookInterface {
   createStudentMutate: (data: {
   firstName: string;
   lastName: string;
-  patronymic: string;
+  middleName: string;
   groupId: number;
 }) => void;
   isCreating: boolean; 
@@ -55,16 +55,47 @@ const useStudents = (): StudentsHookInterface => {
   });
 
 const createStudentMutation = useMutation({
-  mutationFn: (data: {
-    firstName: string;
-    lastName: string;
-    patronymic: string;
-    groupId: number;
-  }) => createStudentApi(data),
-  onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ['students'] });
-  },
-});
+    mutationFn: (data: {
+      firstName: string;
+      lastName: string;
+      middleName: string;
+      groupId: number;
+    }) => createStudentApi(data),
+    onMutate: async (newStudentData) => {
+      await queryClient.cancelQueries({ queryKey: ['students'] });
+
+      const previousStudents = queryClient.getQueryData<StudentInterface[]>(['students']);
+
+      // Создаём временный объект студента без id (он будет присвоен сервером)
+      // Можно использовать временный id, например, отрицательный или с префиксом
+      const tempId = Date.now(); // или другой способ генерации временного id
+      const optimisticStudent: StudentInterface = {
+        id: tempId,
+        ...newStudentData,
+        isDeleted: false,
+        // добавьте другие обязательные поля, если они есть в StudentInterface
+      };
+
+      queryClient.setQueryData(['students'], (old: StudentInterface[] | undefined) => [
+        ...(old ?? []),
+        optimisticStudent,
+      ]);
+
+      return { previousStudents, tempId };
+    },
+    onError: (err, newStudentData, context) => {
+      console.log('>>> createStudentMutate err', err);
+      // Откатываем изменения: восстанавливаем предыдущий список студентов
+      queryClient.setQueryData(['students'], context?.previousStudents);
+    },
+    onSuccess: (createdStudent, newStudentData, context) => {
+      // Удаляем временный студент и добавляем реального с сервера
+      queryClient.setQueryData(['students'], (old: StudentInterface[] | undefined) => {
+        const withoutTemp = (old ?? []).filter((s) => s.id !== context?.tempId);
+        return [...withoutTemp, createdStudent];
+      });
+    },
+  });
 
   return {
     students: data ?? [],

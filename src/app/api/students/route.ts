@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getStudentsDb } from '@/db/studentDb';
 import { createStudentDb } from '@/db/studentDb'; // ← предполагаем, что вы создадите эту функцию
 
-// GET: получить всех студентов
 export async function GET(): Promise<Response> {
   try {
     const students = await getStudentsDb();
@@ -14,8 +13,6 @@ export async function GET(): Promise<Response> {
   }
 }
 
-// POST: создать нового студента
-// POST обработчик
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -25,11 +22,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Требуются: lastName, firstName, groupId' }, { status: 400 });
     }
 
-    // Создаём студента, передавая patronymic как middleName
     const newStudent = await createStudentDb({
       firstName,
       lastName,
-      middleName, // ← это станет middleName в БД
+      middleName,
       groupId,
     });
 

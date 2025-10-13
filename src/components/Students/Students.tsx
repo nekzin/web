@@ -41,7 +41,7 @@ const Students = (): React.ReactElement => {
   const onAddHandler = (data: {
     firstName: string;
     lastName: string;
-    patronymic: string;
+    middleName: string;
     groupId: number;
   }) => {
     createStudentMutate(data);

@@ -7,7 +7,7 @@ interface AddStudentProps {
   onAdd: (data: {
     firstName: string;
     lastName: string;
-    patronymic: string;
+    middleName: string;
     groupId: number;
   }) => void;
   isPending?: boolean;
