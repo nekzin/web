@@ -1,6 +1,7 @@
 // src/components/Students/AddStudent.tsx
 'use client';
 
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 interface AddStudentProps {
@@ -24,10 +25,18 @@ export const AddStudent = ({ onAdd, isPending = false, groups }: AddStudentProps
     defaultValues: {
       firstName: '',
       lastName: '',
-      patronymic: '',
+      middleName: '',
       groupId: groups.length > 0 ? groups[0].id : 0,
     },
   });
+  useEffect(() => {
+    if (groups.length > 0) {
+      reset((prev) => ({
+        ...prev,
+        groupId: groups[0].id,
+      }));
+    }
+  }, [groups, reset]);
 
   const onSubmit = (data: any) => {
     onAdd({
@@ -61,7 +70,7 @@ export const AddStudent = ({ onAdd, isPending = false, groups }: AddStudentProps
 
       <div>
         <input
-          {...register('patronymic')}
+          {...register('middleName')}
           placeholder="Отчество"
           disabled={isPending}
         />

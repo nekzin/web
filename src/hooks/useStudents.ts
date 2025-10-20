@@ -65,15 +65,10 @@ const createStudentMutation = useMutation({
       await queryClient.cancelQueries({ queryKey: ['students'] });
 
       const previousStudents = queryClient.getQueryData<StudentInterface[]>(['students']);
-
-      // Создаём временный объект студента без id (он будет присвоен сервером)
-      // Можно использовать временный id, например, отрицательный или с префиксом
-      const tempId = Date.now(); // или другой способ генерации временного id
+      const tempId = Date.now(); 
       const optimisticStudent: StudentInterface = {
         id: tempId,
-        ...newStudentData,
-        isDeleted: false,
-        // добавьте другие обязательные поля, если они есть в StudentInterface
+        ...newStudentData
       };
 
       queryClient.setQueryData(['students'], (old: StudentInterface[] | undefined) => [
@@ -85,11 +80,9 @@ const createStudentMutation = useMutation({
     },
     onError: (err, newStudentData, context) => {
       console.log('>>> createStudentMutate err', err);
-      // Откатываем изменения: восстанавливаем предыдущий список студентов
       queryClient.setQueryData(['students'], context?.previousStudents);
     },
     onSuccess: (createdStudent, newStudentData, context) => {
-      // Удаляем временный студент и добавляем реального с сервера
       queryClient.setQueryData(['students'], (old: StudentInterface[] | undefined) => {
         const withoutTemp = (old ?? []).filter((s) => s.id !== context?.tempId);
         return [...withoutTemp, createdStudent];

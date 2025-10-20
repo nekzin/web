@@ -35,10 +35,9 @@ export const deleteStudentApi = async (studentId: number): Promise<number> => {
 export const createStudentApi = async (studentData: {
   firstName: string;
   lastName: string;
-  middleName: string; // ← имя из формы
+  middleName: string; 
   groupId: number;
 }): Promise<StudentInterface> => {
-  // Преобразуем patronymic → middleName для БД
   const payload = {
     firstName: studentData.firstName,
     lastName: studentData.lastName,
