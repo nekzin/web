@@ -34,6 +34,8 @@ const Students = (): React.ReactElement => {
 
   const onDeleteHandler = (studentId: number): void => {
     if (confirm('Удалить студента?')) {
+      debugger;
+      console.log('OnDeleteHandler', studentId);
       deleteStudentMutate(studentId);
     }
   };
@@ -44,6 +46,8 @@ const Students = (): React.ReactElement => {
     middleName: string;
     groupId: number;
   }) => {
+    debugger;
+    console.log('Добавление студента',data);
     createStudentMutate(data);
   };
 

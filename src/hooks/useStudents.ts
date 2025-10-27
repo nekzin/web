@@ -40,13 +40,18 @@ const useStudents = (): StudentsHookInterface => {
         student.id === studentId ? { ...student, isDeleted: true } : student
       );
       queryClient.setQueryData(['students'], updatedStudents);
+      console.log('deleteStudentMutate onMutate', previousStudents,updatedStudents);
+      debugger;
       return { previousStudents };
     },
     onError: (err, variables, context) => {
-      console.log('>>> deleteStudentMutate err', err);
+      console.log('deleteStudentMutate err', err);
+      debugger;
       queryClient.setQueryData(['students'], context?.previousStudents);
     },
     onSuccess: (studentId, _variables, context) => {
+      console.log('deleteStudentMutate onSuccess',studentId);
+      debugger;
       const previousStudents = context?.previousStudents;
       if (!previousStudents) return;
       const updatedStudents = previousStudents.filter((s) => s.id !== studentId);
