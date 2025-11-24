@@ -1,7 +1,11 @@
-@use '../../../styles/main';
-
 .Main {
   display: flex;
-  min-height: calc(100vh - 180px);
-  padding: 20px main.$webSidePadding;
+  min-height: calc(100vh - 140px);
+  padding: 30px 40px;
+  gap: 30px;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 20px 15px;
+  }
 }

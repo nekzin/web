@@ -1,26 +1,37 @@
 .Student {
-  margin: 10px 0;
+  margin: 15px 0;
   display: grid;
-  gap: 10px;
+  gap: 15px;
   grid-template-columns: 370px auto;
-
-  transition: opacity 0.9s ease-in-out;
+  background: #fff9fb;
+  padding: 15px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(255, 158, 198, 0.25);
+  transition: all 0.3s ease;
 }
 
-.--isDeleted {
-  color: var(--color3);
-  transition: color 0.5s ease;
-  
-  button {
-    display: none;
-  }
+.Student:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(255, 158, 198, 0.3);
 }
 
-.--isNew {
-  opacity: 0.5;
-  
-  
-  button {
-    display: none;
-  }
+.IsDeleted {
+  color: #ff6b9d;
+  opacity: 0.7;
+  background: rgba(255, 107, 157, 0.1);
+  transition: all 0.5s ease;
+}
+
+.IsNew {
+  opacity: 0.6;
+  background: rgba(255, 158, 198, 0.15);
+}
+
+.StudentButton {
+  display: none;
+}
+
+.IsDeleted .StudentButton,
+.IsNew .StudentButton {
+  display: none;
 }

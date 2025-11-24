@@ -1,23 +1,62 @@
-$width: 400px;
-
 .AddStudent {
   margin-bottom: 30px;
   width: 400px;
-
-  input {
-    width: calc($width - 8px);
-  }
-
-  input[type=submit] {
-    width: $width;
-  }
-
-
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-
+  background: #fff9fb;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(255, 158, 198, 0.25);
 }
 
+.AddStudent input,
+.AddStudent select {
+  width: calc(100% - 24px);
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  border-radius: 16px;
+  border: 2px solid #ff9ec6;
+  background-color: #fff9fb;
+  color: #5a3945;
+  transition: all 0.3s ease;
+  font-size: 18px;
+}
+
+.AddStudent input:focus,
+.AddStudent select:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 158, 198, 0.3);
+}
+
+.AddStudentSubmit {
+  width: 100%;
+  background: linear-gradient(135deg, #ff9ec6, #ffb7e1);
+  color: white;
+  border: none;
+  padding: 12px;
+  font-weight: bold;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 18px;
+  margin-top: 10px;
+}
+
+.AddStudentSubmit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(255, 158, 198, 0.4);
+}
+
+.AddStudentSubmit:active {
+  transform: translateY(0);
+}
+
+.AddStudentForm {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+@media (max-width: 480px) {
+  .AddStudent {
+    width: 100%;
+  }
+}

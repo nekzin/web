@@ -1,17 +1,54 @@
 .Menu {
   display: flex;
-  background-color: var(--background2);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
   justify-content: flex-start;
-  gap: 40px;
-  align-items: center;
+  flex-direction: column;
+  gap: 15px;
+  align-items: flex-start;
   font-size: 18px;
-  color: var(--color);
-  a {
-    color: var(--color);
-    text-decoration: none;
-  }
+  color: #5a3945;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(255, 158, 198, 0.25);
+  min-width: 250px;
+}
+
+.MenuLink {
+  color: #5a3945;
+  text-decoration: none;
+  padding: 8px 15px;
+  border-radius: 10px;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.MenuLink:hover {
+  background: #ffdde9;
+  transform: translateX(5px);
 }
 
 .linkActive {
-  text-decoration: underline;
+  background: linear-gradient(135deg, #ff9ec6, #ffb7e1);
+  color: white !important;
+  text-decoration: none;
+  box-shadow: 0 2px 5px rgba(255, 158, 198, 0.3);
+}
+
+.linkActive:hover {
+  transform: none;
+}
+
+@media (max-width: 768px) {
+  .Menu {
+    flex-direction: row;
+    width: 100%;
+    overflow-x: auto;
+    padding: 10px;
+  }
+  
+  .MenuLink {
+    width: auto;
+    white-space: nowrap;
+  }
 }
