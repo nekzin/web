@@ -1,37 +1,28 @@
-
-import { NextRequest, NextResponse } from 'next/server';
-import { getStudentsDb } from '@/db/studentDb';
-import { createStudentDb } from '@/db/studentDb'; // ← предполагаем, что вы создадите эту функцию
+import { getStudentsDb, addStudentDb } from '@/db/studentDb';
+import { type NextApiRequest } from 'next/types';
 
 export async function GET(): Promise<Response> {
-  try {
-    const students = await getStudentsDb();
-    return NextResponse.json(students);
-  } catch (error) {
-    console.error('Ошибка получения студентов:', error);
-    return NextResponse.json({ error: 'Не удалось загрузить студентов' }, { status: 500 });
-  }
-}
+  const students = await getStudentsDb();
 
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const { firstName, lastName, middleName, groupId } = body;
+  return new Response(JSON.stringify(students), {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+};
 
-    if (!lastName || !firstName || groupId === undefined) {
-      return NextResponse.json({ error: 'Требуются: lastName, firstName, groupId' }, { status: 400 });
-    }
+export async function POST(req: NextApiRequest): Promise<Response> {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const student = await req.json();
+  delete student['id'];
+  const newStudent = await addStudentDb(student);
 
-    const newStudent = await createStudentDb({
-      firstName,
-      lastName,
-      middleName,
-      groupId,
-    });
-
-    return NextResponse.json(newStudent, { status: 201 });
-  } catch (error) {
-    console.error('Ошибка:', error);
-    return NextResponse.json({ error: 'Не удалось создать студента' }, { status: 500 });
-  }
-}
+  console.log(newStudent);
+  return new Response(JSON.stringify(newStudent), {
+    status: 201,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+};

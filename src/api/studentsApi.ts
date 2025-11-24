@@ -29,6 +29,7 @@ export const deleteStudentApi = async (studentId: number): Promise<number> => {
     }
     console.log('deleteStudentApi ok', studentId);
     debugger;
+
     return studentId;
   }
   catch (err) {
@@ -36,29 +37,41 @@ export const deleteStudentApi = async (studentId: number): Promise<number> => {
     return -1;
   }
 };
-export const createStudentApi = async (studentData: {
-  firstName: string;
-  lastName: string;
-  middleName: string; 
-  groupId: number;
-}): Promise<StudentInterface> => {
-  const payload = {
-    firstName: studentData.firstName,
-    lastName: studentData.lastName,
-    middleName: studentData.middleName,
-    groupId: studentData.groupId,
-  };
 
-  const response = await fetch('/api/students', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
+export const addStudentApi = async (student: StudentInterface): Promise<StudentInterface> => {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API}students`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(student),
+    });
 
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Ошибка создания студента');
+    if (!response.ok) {
+      throw new Error(`Ошибка HTTP: ${response.status}`);
+    }
+
+    return response.json() as Promise<StudentInterface>;
   }
+  catch (err) {
+    console.log('>>> addStudentApi', err);
+    throw err;
+  }
+};
 
-  return response.json() as Promise<StudentInterface>;
+export const getStudentByIdApi = async (id: string): Promise<StudentInterface | null> => {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API}students/${id}`, {
+      cache: 'no-store',
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    return await response.json();
+  }
+  catch (error) {
+    console.error('Error fetching student:', error);
+    return null;
+  }
 };

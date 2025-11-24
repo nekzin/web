@@ -66,6 +66,13 @@ body {
   // }
 }
 
+input, select {
+  font-family: PTSans;
+  // color: var(--color);
+  // background-color: var(--background);
+  font-size: 18px;
+}
+
 @mixin commons {
   font-family: PTSans;  
   color: var(--item-color);
@@ -116,4 +123,11 @@ h4 {
   // }
 }
 
-
+a {
+    &:link {
+    color: var(--color);
+  }
+  &:visited {
+    color: var(--color);
+  }
+}

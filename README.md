@@ -1,4 +1,22 @@
-# Знакомство со стеком React, Next.js, TanStack Query, SQLite
+# Знакомство со стеком React, Next.js, TanStackQuery, SQLite, TypeORM
+
+- [Знакомство со стеком React, Next.js, TanStackQuery, SQLite, TypeORM](#знакомство-со-стеком-react-nextjs-tanstackquery-sqlite-typeorm)
+    - [План курса и критерии оценок](#план-курса-и-критерии-оценок)
+  - [Установка](#установка)
+    - [Открыть в браузере две вкладки](#открыть-в-браузере-две-вкладки)
+  - [Конфигурация](#конфигурация)
+  - [Файловый раутинг Next.js - работает из папки src/app](#файловый-раутинг-nextjs---работает-из-папки-srcapp)
+  - [Назначение файлов](#назначение-файлов)
+    - [Приложение - Frontend](#приложение---frontend)
+    - [API - Backend](#api---backend)
+  - [Работа с данными](#работа-с-данными)
+  - [Стилизация](#стилизация)
+  - [Инструменты](#инструменты)
+  - [SSR - Server Side Rendering, передача состояния на клиент](#ssr---server-side-rendering-передача-состояния-на-клиент)
+  - [Ссылки](#ссылки)
+
+
+### [План курса и критерии оценок](docs/plan.md)
 
 ## Установка 
 
@@ -30,13 +48,12 @@ http://localhost:3000/api/groups - апи
 
 
 ## Конфигурация
-1) Создать файл .env.local в корне проекта
-    ```
-    # .env.local
-    DB="g:/db/vki-web.db"
-    NEXT_PUBLIC_API="http://localhost:3000/api/"
-    ```
-2) Скопировать базу данных и ./db/vki-web.db в G:\db\vki-web.db
+Создать файл .env.local в корне проекта
+```
+# .env.local
+DB="g:/vki-web/vki-web-orm.db"
+NEXT_PUBLIC_API="http://localhost:3000/api/"
+```
 
 ## Файловый раутинг Next.js - работает из папки src/app
 
@@ -63,13 +80,18 @@ http://localhost:3000/api/groups - апи
 ## Работа с данными
 ![data](docs/pics/data.png)
 
+## Стилизация
+[читать по ссылке](docs/styles.md)
 
 ## Инструменты
+- ### [Debug - отладка, средства разработки браузера](docs/debug.md)
 - ### [TanStackQuery - работа с данными в приложении](docs/tanstack-query.md)
 - ### [БД SQLite](docs/db.md)
 - ### [HTTP запросы](docs/http.md)
 - ### [GIT](docs/git.md)
 
+## SSR - Server Side Rendering, передача состояния на клиент
+[читать по ссылке](docs/ssr.md)
 
 
 ## Ссылки

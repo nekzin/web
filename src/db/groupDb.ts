@@ -2,31 +2,27 @@ import { Group } from './entity/Group.entity';
 import AppDataSource from './AppDataSource';
 import type GroupInterface from '@/types/GroupInterface';
 
-// Безопасное получение репозитория с инициализацией при необходимости
-const getGroupRepo = async () => {
-  if (!AppDataSource.isInitialized) {
-    await AppDataSource.initialize();
-  }
-  return AppDataSource.getRepository(Group);
-};
+const groupRepository = AppDataSource.getRepository(Group);
 
 /**
  * Получение групп
- * @returns Promise<GroupInterface[]>
+ * @returns  Promise<GroupInterface[]>
  */
 export const getGroupsDb = async (): Promise<GroupInterface[]> => {
-  const repo = await getGroupRepo();
-  return await repo.find();
+  const groups = await groupRepository.find({ relations: ['students'] });
+  return groups as GroupInterface[];
 };
 
 /**
  * Добавление группы
- * @returns Promise<GroupInterface>
+ * @returns  Promise<GroupInterface>
  */
-export const addGroupsDb = async (
-  groupFields: Omit<GroupInterface, 'id'>
-): Promise<GroupInterface> => {
-  const repo = await getGroupRepo();
-  const group = repo.create(groupFields);
-  return await repo.save(group);
+export const addGroupsDb = async (groupFields: Omit<GroupInterface, 'id'>): Promise<GroupInterface> => {
+  const group = new Group();
+  const newGroup = await groupRepository.save({
+    ...group,
+    ...groupFields,
+  });
+
+  return newGroup;
 };

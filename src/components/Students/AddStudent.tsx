@@ -1,102 +1,59 @@
-// src/components/Students/AddStudent.tsx
-'use client';
+import type StudentInterface from '@/types/StudentInterface';
+import { useForm, type SubmitHandler } from 'react-hook-form';
+import type GroupInterface from '@/types/GroupInterface';
 
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+export type FormFields = Pick<StudentInterface, 'firstName' | 'lastName' | 'middleName' | 'groupId'>;
 
-interface AddStudentProps {
-  onAdd: (data: {
-    firstName: string;
-    lastName: string;
-    middleName: string;
-    groupId: number;
-  }) => void;
-  isPending?: boolean;
-  groups: { id: number; name: string }[];
+interface Props {
+  onAdd: (studentForm: FormFields) => void;
+  groups: GroupInterface[];
 }
 
-export const AddStudent = ({ onAdd, isPending = false, groups }: AddStudentProps) => {
+const AddStudent = ({ onAdd, groups }: Props): React.ReactElement => {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
-  } = useForm({
-    defaultValues: {
-      firstName: '',
-      lastName: '',
-      middleName: '',
-      groupId: groups.length > 0 ? groups[0].id : 0,
-    },
-  });
-  useEffect(() => {
-    if (groups.length > 0) {
-      reset((prev) => ({
-        ...prev,
-        groupId: groups[0].id,
-      }));
-    }
-  }, [groups, reset]);
+  } = useForm<FormFields>();
 
-  const onSubmit = (data: any) => {
-    onAdd({
-      ...data,
-      groupId: Number(data.groupId),
-    });
-    reset();
-  };
+  const onSubmit: SubmitHandler<FormFields> = studentForm => onAdd(studentForm);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} >
-      <h3>Добавить студента</h3>
+    <div>
+      <h2>Добавления студента</h2>
 
-      <div >
+      <form onSubmit={handleSubmit(onSubmit)}>
+
         <input
-          {...register('lastName', { required: 'Фамилия обязательна' })}
           placeholder="Фамилия"
-          disabled={isPending}
+          {...register('lastName', { required: true })}
         />
-        {errors.lastName && <p >{errors.lastName.message as string}</p>}
-      </div>
+        {errors.lastName && <div>Обязательное поле</div>}
 
-      <div >
         <input
-          {...register('firstName', { required: 'Имя обязательно' })}
           placeholder="Имя"
-          disabled={isPending}
+          {...register('firstName', { required: true })}
         />
-        {errors.firstName && <p >{errors.firstName.message as string}</p>}
-      </div>
+        {errors.firstName && <div>Обязательное поле</div>}
 
-      <div>
         <input
-          {...register('middleName')}
           placeholder="Отчество"
-          disabled={isPending}
+          {...register('middleName', { required: true })}
         />
-      </div>
+        {errors.middleName && <div>Обязательное поле</div>}
 
-      <div>
-        <select
-          {...register('groupId', { valueAsNumber: true, required: 'Выберите группу' })}
-          disabled={isPending || groups.length === 0}
-        >
-          {groups.length === 0 ? (
-            <option>Загрузка групп...</option>
-          ) : (
-            groups.map((group) => (
-              <option key={group.id} value={group.id}>
-                {group.name}
-              </option>
-            ))
-          )}
+        <select id="mySelect" {...register('groupId', { required: true })}>
+          <option value="">--Выберите группу--</option>
+          {groups.map(group => (
+            <option value={group.id} key={group.id}>{group.name}</option>
+          ))}
         </select>
-        {errors.groupId && <p>{errors.groupId.message as string}</p>}
-      </div>
 
-      <button type="submit" disabled={isPending || groups.length === 0}>
-        {isPending ? 'Добавление...' : 'Добавить'}
-      </button>
-    </form>
+        <input type="submit" value="Добавить" />
+      </form>
+
+    </div>
   );
 };
+
+export default AddStudent;

@@ -1,9 +1,12 @@
+import Link from 'next/link';
 import Menu from '../Menu/Menu';
 import styles from './Header.module.scss';
 
 const Header = (): React.ReactElement => (
   <header className={styles.Header}>
-    <div className={styles.title}>Вэб разработка</div>
+    <Link href="/" className={styles.title} role="heading">
+      ВКИ Класс
+    </Link>
     <Menu />
   </header>
 );
