@@ -1,38 +1,30 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getStudentsDb, addStudentDb } from '@/db/studentDb';
 import { dbInit } from '@/db/AppDataSource';
+import { studentService } from '@/services/StudentService';
+import { type NextRequest } from 'next/server';
 
-export async function GET() {
-  try {
-    // Инициализируем базу данных
-    await dbInit();
-    
-    const students = await getStudentsDb();
-    return NextResponse.json(students);
-  } catch (error) {
-    console.error('Error in GET /api/students:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch students' },
-      { status: 500 }
-    );
-  }
-}
+export async function GET(): Promise<Response> {
+  await dbInit();
+  const students = await studentService.getStudents();
 
-export async function POST(request: NextRequest) {
-  try {
-    // Инициализируем базу данных
-    await dbInit();
-    
-    const student = await request.json();
-    delete student.id; // Удаляем id, если он был передан
-    
-    const newStudent = await addStudentDb(student);
-    return NextResponse.json(newStudent, { status: 201 });
-  } catch (error) {
-    console.error('Error in POST /api/students:', error);
-    return NextResponse.json(
-      { error: 'Failed to create student' },
-      { status: 500 }
-    );
-  }
-}
+  return new Response(JSON.stringify(students), {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+};
+
+export async function POST(req: NextRequest): Promise<Response> {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const student = await req.json();
+  delete student['id'];
+  const newStudent = await studentService.addStudent(student);
+
+  console.log(newStudent);
+  return new Response(JSON.stringify(newStudent), {
+    status: 201,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+};

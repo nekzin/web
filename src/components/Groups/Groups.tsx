@@ -16,9 +16,9 @@ const Groups = (): React.ReactElement => {
             {group.name}
           </h2>
 
-          {group.students.map((student: StudentInterface) => (
-            <div key={student.id}>{`${student.id} - ${student.lastName} ${student.firstName}`}</div>
-          ))}
+          {(group.students || []).map((student: StudentInterface) => (
+  <div key={student.id}>{`${student.id} - ${student.lastName} ${student.firstName}`}</div>
+        ))}
         </section>
       ))}
     </div>

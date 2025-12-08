@@ -12,9 +12,8 @@ const base64UrlEncode = (input: Buffer | string): string => {
 };
 
 const getJwtSecret = (): string => {
-  // const secret = process.env.JWT_SECRET;
-  const secret = 'secret';
-
+  const secret = process.env.JWT_SECRET;
+ 
   if (!secret) {
     throw new Error('JWT_SECRET is not set');
   }

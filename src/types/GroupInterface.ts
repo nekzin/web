@@ -4,7 +4,7 @@ interface GroupInterface {
   id: number;
   name: string;
   contacts: string;
-  students: StudentInterface[];
+  students?: StudentInterface[];
 };
 
 export default GroupInterface;
